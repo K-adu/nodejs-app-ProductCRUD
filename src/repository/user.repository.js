@@ -11,9 +11,11 @@ const createNewUser = async (req,res)=>{
     // Saving a New User
     const newUser = new User({ name, email, password });
     newUser.password = await newUser.encryptPassword(password);
+    
     await newUser.save();
+    token = await newUser.generateAuthToken()
     // req.flash("success_msg", "You are registered.");
-    res.send("suignin successgul");
+    res.status(200).send(token);
   };
 
 
