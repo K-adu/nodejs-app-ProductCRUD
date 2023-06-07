@@ -16,7 +16,8 @@ const signup = async (req,res)=>{
 
 const login = async(req,res)=>{
     console.log(req.body)
-    checkExistingUser(req,res)
+    await checkExistingUser(req,res)
+    // res.render('homepage')
 }
 
 module.exports = {

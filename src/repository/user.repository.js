@@ -5,7 +5,7 @@ const createNewUser = async (req,res)=>{
    const  {name,email,password} =  req.body
     const userFound = await User.findOne({ email: email });
     if (userFound) {
-      return res.send("user already exist");
+      return res.send({message: 'Email already Exist'});
     }
   
     // Saving a New User
@@ -28,15 +28,16 @@ const createNewUser = async (req,res)=>{
       if (userFound) {
         const isMatch = await userFound.matchPassword(password);
         if (isMatch) {
-          res.send('Successfully logged in');
+          token = await userFound.generateAuthToken()
+          
         } else {
-          res.send('Invalid login details');
+          res.send({message: 'Invalid login details'});
         }
       } else {
-        res.send('User not found');
+        res.send({message: 'User not found'});
       }
     } catch (e) {
-      res.send('Error occurred during login');
+      res.send({message:'Error occurred during login'});
     }
   };
   

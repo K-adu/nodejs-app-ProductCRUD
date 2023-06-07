@@ -5,8 +5,6 @@ const router = express.Router()
 
 
 
-// //render signup
-// router.get('/auth/signup', renderSignup)
 
 
 //post signup method
@@ -14,17 +12,10 @@ router.post('/auth/signup', signup)
 
 
 
-// //render login
-// router.get('/auth/signup', renderLogin)
-
-
 // post signup method
-router.post('/auth/login', login)
+router.post('/auth/signin', login)
 
 
-
-//logout 
-// router.post('/auth/logout', logout)
 
 
 
