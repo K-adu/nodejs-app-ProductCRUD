@@ -1,4 +1,9 @@
-const {addProductToDb,renderProductFromDb,updateProductInDb,getProductByIDFromDb} = require('../repository/product.repository')
+const {
+        addProductToDb,
+        renderProductFromDb,
+        updateProductInDb,
+        getProductByIDFromDb,
+        deleteProductsFromDb} = require('../repository/product.repository')
 
 
 
@@ -31,18 +36,24 @@ const renderProducts = async (req, res) => {
   
 
 const updateProduct = async (req,res)=>{
-    const updates = Object.keys(req.body)
-    const allowedUpdates = ['title', 'description','price']
 
-    const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
-    if (!isValidOperation) {
-        return res.status(400).send({ error: 'Invalid updates!' })
-    }
     await updateProductInDb(req,res)
     
 }
 const renderProductById = async (req,res)=>{
     const Product = await getProductByIDFromDb(req,res)
+}
+
+const deleteProducts = async(req,res)=>{
+    try{
+    const product = await deleteProductsFromDb(req,res)
+    if (!product) {
+        res.status(404).send()
+    }
+    res.send(product)
+    } catch (e) {
+        res.status(500).send()
+    }
 }
 
 
@@ -51,4 +62,5 @@ module.exports = {
     renderProducts,
     updateProduct,
     renderProductById,
+    deleteProducts
 }
