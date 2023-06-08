@@ -1,6 +1,6 @@
 const express = require('express')
 const isAuthenticated = require('../middleware/auth')
-const {createNewProduct,renderProducts,updateProduct} = require('../controller/products.controller')
+const {createNewProduct,renderProducts,updateProduct,renderProductById} = require('../controller/products.controller')
 const router = express.Router();
 
 // New product
@@ -10,6 +10,11 @@ router.post("/products/new-product",isAuthenticated, createNewProduct);
 
 // // Get All products
 router.get("/products", isAuthenticated, renderProducts);
+
+
+//get product details using product id
+router.get('/products/:id',isAuthenticated,renderProductById)
+
 
 // // Edit products
 // router.get("/products/edit/:id", isAuthenticated, renderEditForm);

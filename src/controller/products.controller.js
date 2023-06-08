@@ -1,4 +1,4 @@
-const {addProductToDb,renderProductFromDb,updateProductInDb} = require('../repository/product.repository')
+const {addProductToDb,renderProductFromDb,updateProductInDb,getProductByIDFromDb} = require('../repository/product.repository')
 
 
 
@@ -10,18 +10,25 @@ const createNewProduct = (req,res)=>{
 }
 
 
-const renderProducts = async (req,res)=>{
-
-    const products = await renderProductFromDb(req,res)
-    products.forEach((product) => {
+const renderProducts = async (req, res) => {
+    try {
+      const userId = req.user.id;
+      const products = await renderProductFromDb(userId);
+      
+      products.forEach((product) => {
         console.log('Title:', product.title);
         console.log('Description:', product.description);
         console.log('Price:', product.price);
         console.log('---');
       });
-
-    res.send('success')
-}
+  
+      res.send(products);
+    } catch (error) {
+      console.error('Error fetching and rendering products:', error.message);
+      res.status(500).send('Internal Server Error');
+    }
+  };
+  
 
 const updateProduct = async (req,res)=>{
     const updates = Object.keys(req.body)
@@ -31,16 +38,17 @@ const updateProduct = async (req,res)=>{
     if (!isValidOperation) {
         return res.status(400).send({ error: 'Invalid updates!' })
     }
-    updateProductInDb(req,res)
+    await updateProductInDb(req,res)
     
-
 }
-
-
+const renderProductById = async (req,res)=>{
+    const Product = await getProductByIDFromDb(req,res)
+}
 
 
 module.exports = {
     createNewProduct,
     renderProducts,
     updateProduct,
+    renderProductById,
 }

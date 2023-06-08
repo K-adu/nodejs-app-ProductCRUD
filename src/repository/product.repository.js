@@ -15,31 +15,48 @@ const addProductToDb =async (req,res)=>{
 
     }
 }
-const renderProductFromDb = async (req,res)=>{
+const renderProductFromDb = async (userId) => {
     try {
-        // Fetch all products from the database
-        const products = await Product.find({}, '-owner').lean();
-        return products
+      // Fetch products associated with the given user ID
+      const products = await Product.find({ owner: userId }, '-owner').lean();
+      return products;
+      
+      // You can perform any other rendering logic here
+      
+    } catch (error) {
+      console.error('Error fetching and rendering products:', error.message);
+      throw error;
+    }
+  };
 
-        // You can perform any other rendering logic here
-    
-      } catch (error) {
-        console.error('Error fetching and rendering products:', error.message);
-      }
-}
+  const getProductByIDFromDb = async (req,res)=>{
+    const product = await Product.findOne({ _id: req.params.id, owner: req.user._id})
+    // console.log(product)
+    res.send(product)
+  }
+
+
 
 const updateProductInDb = async (req,res)=>{
+    const updates = Object.keys(req.body)
+    const allowedUpdates = ['title', 'description','price']
 
+    const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
+    if (!isValidOperation) {
+         res.status(400).send({ error: 'Invalid updates!' })
+    }
     try {
-        const product = await Product.findOne({ _id: req.params.id, owner: req.user._id})
+        console.log(req.body)
 
+        const product = await Product.findOne({ _id: req.params.id,owner: req.user._id})
+        console.log(product)
         if (!product) {
-            return res.status(404).send()
+             res.status(404).send()
         }
 
         updates.forEach((update) => product[update] = req.body[update])
         await product.save()
-        res.status(200).send(product)
+         res.status(200).send(product)
     } catch (e) {
         res.status(400).send(e)
     }
@@ -50,6 +67,7 @@ module.exports = {
     addProductToDb,
     renderProductFromDb,
     updateProductInDb,
+    getProductByIDFromDb
 }
 
 // getting the propducts

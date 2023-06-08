@@ -1,45 +1,79 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Homepage</title>
-  </head>
-  <body>
-    <h1>Welcome to the Homepage!</h1>
-    <p>Token: {{token}}</p>
-    <script>
-      var token = "{{token}}";
+<head>
+  <title>Homepage</title>
+</head>
+<body>
+  <h1>Welcome to the Homepage!</h1>
+  <p>Token: {{token}}</p>
+  <script>
+    var token = "{{token}}";
 
-      // Save the token to local storage
-      function saveTokenToLocalStorage(token) {
-        localStorage.setItem('token', token);
-      }
+    // Save the token to local storage
+    function saveTokenToLocalStorage(token) {
+      localStorage.setItem('token', token);
+    }
 
-      saveTokenToLocalStorage(token);
-    </script>
+    saveTokenToLocalStorage(token);
+  </script>
 
-    <!-- Add Product Form -->
-    <h2>Add Product</h2>
-    <form id="addProductForm" >
-      <label for="title">Title:</label>
-      <input type="text" id="title" name="title" required>
+  <!-- Add Product Form -->
+  <h2>Add Product</h2>
+  <button id="addProductButton">Add Product</button>
 
-      <label for="description">Description:</label>
-      <textarea id="description" name="description" required></textarea>
 
-      <label for="price">Price:</label>
-      <input type="number" id="price" name="price" required>
+  <!-- Get All Products -->
+  <h2>Get All Products</h2>
+  <button id="getAllProductsButton">Get All Products</button>
 
-      <button type="submit">Add Product</button>
-    </form>
+  <div id="productList"></div>
 
-    <script>
-      const addProductForm = document.getElementById('addProductForm');
+  <script>
+    const addProductButton = document.getElementById('addProductButton');
+    addProductButton.addEventListener('click', function () {
+      // Open the add product form as a dialogue box
+      openAddProductDialogue();
+    });
+
+    function openAddProductDialogue() {
+      const addProductForm = document.createElement('form');
+
+      const titleLabel = document.createElement('label');
+      titleLabel.textContent = 'Title:';
+      const titleInput = document.createElement('input');
+      titleInput.type = 'text';
+      titleInput.required = true;
+
+      const descriptionLabel = document.createElement('label');
+      descriptionLabel.textContent = 'Description:';
+      const descriptionTextarea = document.createElement('textarea');
+      descriptionTextarea.required = true;
+
+      const priceLabel = document.createElement('label');
+      priceLabel.textContent = 'Price:';
+      const priceInput = document.createElement('input');
+      priceInput.type = 'number';
+      priceInput.required = true;
+
+      const submitButton = document.createElement('button');
+      submitButton.type = 'submit';
+      submitButton.textContent = 'Add Product';
+
+      addProductForm.appendChild(titleLabel);
+      addProductForm.appendChild(titleInput);
+      addProductForm.appendChild(descriptionLabel);
+      addProductForm.appendChild(descriptionTextarea);
+      addProductForm.appendChild(priceLabel);
+      addProductForm.appendChild(priceInput);
+      addProductForm.appendChild(submitButton);
+
+      // Handle the form submission
       addProductForm.addEventListener('submit', function (event) {
         event.preventDefault();
 
-        const title = document.getElementById('title').value;
-        const description = document.getElementById('description').value;
-        const price = document.getElementById('price').value;
+        const title = titleInput.value;
+        const description = descriptionTextarea.value;
+        const price = priceInput.value;
 
         const data = {
           title: title,
@@ -58,10 +92,176 @@
             'Authorization': `Bearer ${token}`
           },
           body: JSON.stringify(data)
-        }).then(res => {
-            console.log(res)
         })
+          .then(res => {
+            console.log(res);
+            // Handle the response
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            // Handle the error
+          });
+
+        // Close the dialogue box
+        addProductDialogue.close();
+      });
+
+      // Open the dialogue box
+      const addProductDialogue = window.open('', 'Add Product', 'width=400,height=300');
+      addProductDialogue.document.body.appendChild(addProductForm);
+    }
+
+    const getAllProductsButton = document.getElementById('getAllProductsButton');
+    getAllProductsButton.addEventListener('click', function () {
+      // Get all products
+      getProducts();
+    });
+
+    function getProducts() {
+      // Retrieve the token from local storage
+      const token = localStorage.getItem('token');
+
+      // Send request to server to get all products
+      fetch('http://localhost:3000/products', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          displayProducts(data)
+          // Handle the response data
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          // Handle the error
         });
-    </script>
-  </body>
+    }
+
+    function displayProducts(products) {
+      const productList = document.getElementById('productList');
+      productList.innerHTML = '';
+
+      products.forEach(product => {
+        const productDiv = document.createElement('div');
+        productDiv.innerHTML = `
+          <h3>${product.title}</h3>
+          <p>Description: ${product.description}</p>
+          <p>Price: $${product.price}</p>
+          <button class="editProductButton" data-product-id="${product._id}">Edit</button>
+          <hr>
+        `;
+
+        productList.appendChild(productDiv);
+      });
+
+      const editProductButtons = document.querySelectorAll('.editProductButton');
+      editProductButtons.forEach(button => {
+        button.addEventListener('click', function () {
+          const productId = button.getAttribute('data-product-id');
+          console.log(productId)
+          openEditProductDialogue(productId);
+        });
+      });
+    }
+
+    function openEditProductDialogue(productId) {
+      // Retrieve the token from local storage
+      const token = localStorage.getItem('token');
+
+      // Fetch the existing product details using the product ID
+      fetch(`http://localhost:3000/products/${productId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then(response => response.json())
+        .then(product => {
+          // Create the edit product form
+          const editProductForm = document.createElement('form');
+
+          const titleLabel = document.createElement('label');
+          titleLabel.textContent = 'Title:';
+          const titleInput = document.createElement('input');
+          titleInput.type = 'text';
+          titleInput.required = true;
+          titleInput.value = product.title;
+
+          const descriptionLabel = document.createElement('label');
+          descriptionLabel.textContent = 'Description:';
+          const descriptionTextarea = document.createElement('textarea');
+          descriptionTextarea.required = true;
+          descriptionTextarea.value = product.description;
+
+          const priceLabel = document.createElement('label');
+          priceLabel.textContent = 'Price:';
+          const priceInput = document.createElement('input');
+          priceInput.type = 'number';
+          priceInput.required = true;
+          priceInput.value = product.price;
+
+          const submitButton = document.createElement('button');
+          submitButton.type = 'submit';
+          submitButton.textContent = 'Update Product';
+
+          editProductForm.appendChild(titleLabel);
+          editProductForm.appendChild(titleInput);
+          editProductForm.appendChild(descriptionLabel);
+          editProductForm.appendChild(descriptionTextarea);
+          editProductForm.appendChild(priceLabel);
+          editProductForm.appendChild(priceInput);
+          editProductForm.appendChild(submitButton);
+
+          // Handle the form submission
+          editProductForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const updatedTitle = titleInput.value;
+            const updatedDescription = descriptionTextarea.value;
+            const updatedPrice = priceInput.value;
+
+            const data = {
+              title: updatedTitle,
+              description: updatedDescription,
+              price: updatedPrice
+            };
+            console.log(productId, data)
+            // Send the updated product data to the server
+            fetch(`http://localhost:3000/products/edit-product/${productId}`, {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify(data)
+            })
+              .then(res => {
+               // console.log(res.body);
+                // Handle the response
+              })
+              .catch(error => {
+                console.error('Error:', error);
+                // Handle the error
+              });
+
+            // Close the dialogue box
+            editProductDialogue.close();
+          });
+
+          // Open the dialogue box
+          const editProductDialogue = window.open('', 'Edit Product', 'width=400,height=300');
+          editProductDialogue.document.body.appendChild(editProductForm);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          // Handle the error
+        });
+    }
+  </script>
+</body>
 </html>
