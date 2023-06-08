@@ -20,6 +20,7 @@ const login = async(req,res)=>{
     res.render('homepage', {token: token})
 }
 
+
 module.exports = {
     signup,
     login,

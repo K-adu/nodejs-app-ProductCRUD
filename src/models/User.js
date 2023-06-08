@@ -10,7 +10,10 @@ const UserSchema = mongoose.Schema({
       token:{
         type: String,
         required: true
-    }}]
+    }}],
+    profileic: {
+      type: Buffer,
+    }
 },{
     timestamp: true,
 

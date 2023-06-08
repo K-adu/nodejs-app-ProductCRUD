@@ -7,7 +7,7 @@
         </h4>
       </div>
       <div class="card-body">
-        <form action="/auth/signup" method="POST">
+        <form action="/auth/signup" method="POST" >
           <div class="mb-3">
             <label for="name">Name:</label>
             <input
@@ -39,7 +39,7 @@
             />
           </div>
           <div class="mb-3">
-            <label for="confirm_password">Cofirm Password:</label>
+            <label for="confirm_password">Confirm Password:</label>
             <input
               type="password"
               class="form-control bg-dark text-white"
@@ -47,6 +47,7 @@
               placeholder="Confirm Password"
               value="{{confirm_password}}"
             />
+          </div>
           </div>
           <button class="btn btn-success btn-block">
             Signup
