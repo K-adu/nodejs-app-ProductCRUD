@@ -13,7 +13,7 @@ router.post('/auth/signup', signup)
 
 
 // post signup method
-router.post('/auth/signin', login)
+router.post('/auth/login', login)
 
 
 

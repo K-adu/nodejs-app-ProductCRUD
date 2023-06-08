@@ -15,7 +15,7 @@ const createNewUser = async (req,res)=>{
     await newUser.save();
     token = await newUser.generateAuthToken()
     // req.flash("success_msg", "You are registered.");
-    res.status(200).send(token);
+    return token
   };
 
 
@@ -29,7 +29,7 @@ const createNewUser = async (req,res)=>{
         const isMatch = await userFound.matchPassword(password);
         if (isMatch) {
           token = await userFound.generateAuthToken()
-          
+          return token
         } else {
           res.send({message: 'Invalid login details'});
         }

@@ -1,18 +1,67 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Homepage</title>
-</head>
-<body>
-    <h1>Welcome to the Homepage</h1>
-    <div>
-        <a href="/products">Display All Products</a>
-    </div>
-    <div>
-        <a href="/products/">Add Product</a>
-    </div>
-    <div>
-        <a href="/products/my">Get My Products</a>
-    </div>
-</body>
+  </head>
+  <body>
+    <h1>Welcome to the Homepage!</h1>
+    <p>Token: {{token}}</p>
+    <script>
+      var token = "{{token}}";
+
+      // Save the token to local storage
+      function saveTokenToLocalStorage(token) {
+        localStorage.setItem('token', token);
+      }
+
+      saveTokenToLocalStorage(token);
+    </script>
+
+    <!-- Add Product Form -->
+    <h2>Add Product</h2>
+    <form id="addProductForm" >
+      <label for="title">Title:</label>
+      <input type="text" id="title" name="title" required>
+
+      <label for="description">Description:</label>
+      <textarea id="description" name="description" required></textarea>
+
+      <label for="price">Price:</label>
+      <input type="number" id="price" name="price" required>
+
+      <button type="submit">Add Product</button>
+    </form>
+
+    <script>
+      const addProductForm = document.getElementById('addProductForm');
+      addProductForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const title = document.getElementById('title').value;
+        const description = document.getElementById('description').value;
+        const price = document.getElementById('price').value;
+
+        const data = {
+          title: title,
+          description: description,
+          price: price
+        };
+
+        // Retrieve the token from local storage
+        const token = localStorage.getItem('token');
+
+        // Send to the server with auth header
+        fetch('http://localhost:3000/products/new-product', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(data)
+        }).then(res => {
+            console.log(res)
+        })
+        });
+    </script>
+  </body>
 </html>

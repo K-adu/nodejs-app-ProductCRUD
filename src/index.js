@@ -14,9 +14,6 @@ require('./dbconn')
 
 
 
-// // // connecting the public directory
-// const publicDirPath = path.join(__dirname, '/public')
-
 
 //constants global
 const PORT =  3000
@@ -27,6 +24,9 @@ const PORT =  3000
 const app = express()
 
 
+// // // connecting the public directory
+const publicDirPath = path.join(__dirname, '/public')
+app.use(express.static(publicDirPath))
 
 // app.uses and sets
 
@@ -45,11 +45,11 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "*");
       next();
     });
-// app.use(express.static(publicDirPath))
+
 
 // // //set
-// app.set('view engine', 'hbs');
-// app.set('views', __dirname + '/views');
+app.set('view engine', 'hbs');
+app.set('views', __dirname + '/views');
 
 
 
@@ -61,16 +61,16 @@ app.use(function (req, res, next) {
 // })
 
 
-// //login page
-// app.get('/auth/login', (req,res)=>{
-//     res.render('auth/login')
-// })
+//login page
+app.get('/auth/login', (req,res)=>{
+    res.render('login')
+})
 
-// // //signup
-// // //login page
-// app.get('/auth/signup', (req,res)=>{
-//     res.render('auth/signup')
-// })
+// //signup
+// //login page
+app.get('/auth/signup', (req,res)=>{
+    res.render('signup')
+})
 
 
 
