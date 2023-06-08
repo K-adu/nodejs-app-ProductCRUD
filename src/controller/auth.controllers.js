@@ -8,7 +8,7 @@ const signup = async (req,res)=>{
     console.log(req.body)
     const userData = signUpValidator(req,res)
     if(userData){
-       const token =  createNewUser(req,res)
+       const token =  await createNewUser(req,res)
        res.render('homepage', {token: token})
     }
 
