@@ -1,22 +1,30 @@
 const User = require('../models/User')
-
+const multer = require('multer')
 
 const createNewUser = async (req,res)=>{
    const  {name,email,password} =  req.body
+   const { buffer } = req.file;
     const userFound = await User.findOne({ email: email });
     if (userFound) {
       return res.send({message: 'Email already Exist'});
     }
+
+    if (!password) {
+      return res.status(400).send({ message: 'Password is required' });
+    }
   
     // Saving a New User
-    const newUser = new User({ name, email, password });
+    const profilePicBuffer = Buffer.from(buffer);
+    const newUser = new User({ name, email, password, profilePic: profilePicBuffer  });
     newUser.password = await newUser.encryptPassword(password);
     
     await newUser.save();
     token = await newUser.generateAuthToken()
-    // req.flash("success_msg", "You are registered.");
     return token
+    // req.flash("success_msg", "You are registered.");
   };
+
+
 
 
   const checkExistingUser = async (req, res) => {

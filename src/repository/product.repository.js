@@ -62,12 +62,24 @@ const updateProductInDb = async (req,res)=>{
     }
 }
 
+const deleteProductsFromDb = async (req,res)=>{
+    try {
+        console.log(req)
+        const product = await Product.findOneAndDelete({ _id: req.params.id, owner: req.user._id })
+        return product
+
+    }catch(error){
+        return error
+    }
+
+}
 
 module.exports = {
     addProductToDb,
     renderProductFromDb,
     updateProductInDb,
-    getProductByIDFromDb
+    getProductByIDFromDb,
+    deleteProductsFromDb
 }
 
 // getting the propducts

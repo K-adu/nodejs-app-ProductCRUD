@@ -2,8 +2,9 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const path = require('path')
-const authRouter =  require('./routes/auth.routes')
+const authRouter =  require('./routes/user.routes')
 const productRouter = require('./routes/products.routes')
+const emailRouter = require('./routes/email.routes')
 const hbs = require('hbs');
 const cors = require('cors')
 
@@ -36,7 +37,7 @@ app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(authRouter)
 app.use(productRouter)
-
+app.use(emailRouter)
 
 app.use(function (req, res, next) {
     //Enabling CORS
@@ -59,7 +60,9 @@ app.set('views', __dirname + '/views');
 // app.get('/',(req,res)=>{
 // 	res.render('index')
 // })
-
+app.get('/',(req,res)=>{
+    res.render('welcomepage')
+})
 
 //login page
 app.get('/auth/login', (req,res)=>{
@@ -72,7 +75,9 @@ app.get('/auth/signup', (req,res)=>{
     res.render('signup')
 })
 
-
+app.get('/send-email',(req,res)=>{
+    res.render('sendemail')
+})
 
 //listening to the server
 app.listen(PORT,()=>{

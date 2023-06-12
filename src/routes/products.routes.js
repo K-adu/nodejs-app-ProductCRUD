@@ -1,6 +1,10 @@
 const express = require('express')
 const isAuthenticated = require('../middleware/auth')
-const {createNewProduct,renderProducts,updateProduct,renderProductById} = require('../controller/products.controller')
+const {createNewProduct,
+        renderProducts,
+         updateProduct,
+        renderProductById,
+        deleteProducts} = require('../controller/products.controller')
 const router = express.Router();
 
 // New product
@@ -22,6 +26,6 @@ router.get('/products/:id',isAuthenticated,renderProductById)
 router.patch("/products/edit-product/:id", isAuthenticated, updateProduct);
 
 // // Delete products
-// router.delete("/products/delete/:id", isAuthenticated, deleteProducts);
+router.delete("/products/delete/:id", isAuthenticated, deleteProducts);
 
 module.exports = router

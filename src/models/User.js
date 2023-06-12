@@ -10,7 +10,10 @@ const UserSchema = mongoose.Schema({
       token:{
         type: String,
         required: true
-    }}]
+    }}],
+    profilePic: {
+      type: Buffer,
+    }
 },{
     timestamp: true,
 

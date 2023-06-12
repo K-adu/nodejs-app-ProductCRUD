@@ -6,6 +6,7 @@
 <body>
   <h1>Welcome to the Homepage!</h1>
   <p>Token: {{token}}</p>
+    <p>Token: {{profilePic}}</p>
   <script>
     var token = "{{token}}";
 
@@ -152,6 +153,7 @@
           <p>Description: ${product.description}</p>
           <p>Price: $${product.price}</p>
           <button class="editProductButton" data-product-id="${product._id}">Edit</button>
+           <button class="deleteProductButton" data-product-id="${product._id}">Delete</button>
           <hr>
         `;
 
@@ -166,7 +168,49 @@
           openEditProductDialogue(productId);
         });
       });
+
+    const deleteProductButtons = document.querySelectorAll('.deleteProductButton');
+    deleteProductButtons.forEach(button => {
+    button.addEventListener('click', function () {
+      const productId = button.getAttribute('data-product-id');
+      console.log(productId);
+      deleteProduct(productId);
+    });
+  });
     }
+
+
+
+        function deleteProduct(productId) {
+  // Retrieve the token from local storage
+  const token = localStorage.getItem('token');
+
+  // Send request to delete the product
+  fetch(`http://localhost:3000/products/delete/${productId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  })
+    .then(response => {
+      if (response.ok) {
+        console.log('Product deleted successfully');
+        // Update the product list after deletion
+        getProducts();
+      } else {
+        console.error('Error deleting product:', response.statusText);
+        // Handle the error
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      // Handle the error
+    });
+}
+
+
+
 
     function openEditProductDialogue(productId) {
       // Retrieve the token from local storage
@@ -216,6 +260,15 @@
           editProductForm.appendChild(priceLabel);
           editProductForm.appendChild(priceInput);
           editProductForm.appendChild(submitButton);
+
+
+        //delete product button
+        delete
+        
+
+
+
+
 
           // Handle the form submission
           editProductForm.addEventListener('submit', function (event) {
