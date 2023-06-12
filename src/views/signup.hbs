@@ -7,7 +7,7 @@
         </h4>
       </div>
       <div class="card-body">
-        <form action="/auth/signup" method="POST" >
+        <form action="/auth/signup" method="POST" enctype="multipart/form-data">
           <div class="mb-3">
             <label for="name">Name:</label>
             <input
@@ -48,6 +48,11 @@
               value="{{confirm_password}}"
             />
           </div>
+  <div>
+    <label for="profilePic">Image:</label>
+    <input type="file" id="profilePic" name="profilePic" >
+  </div>
+
           </div>
           <button class="btn btn-success btn-block">
             Signup

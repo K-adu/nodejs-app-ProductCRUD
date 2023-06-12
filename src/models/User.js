@@ -11,7 +11,7 @@ const UserSchema = mongoose.Schema({
         type: String,
         required: true
     }}],
-    profileic: {
+    profilePic: {
       type: Buffer,
     }
 },{

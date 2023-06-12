@@ -1,19 +1,32 @@
 const express = require('express')
 const {signup,login} = require('../controller/user.controllers')
-const upload = require('../handler/multer')
+const multer = require('multer')
 const router = express.Router()
 const isAuthenticated = require('../middleware/auth')
+
+upload = multer({
+    limits: {
+        fileSize: 1000000000,
+
+    },
+    storage: multer.memoryStorage(),
+    // fileFilter(req,file,cb){
+    //     if(!file.originalname.match(/\.(jpg|jpeg|png)$/)){
+    //         return cb(new Error('please specify a valid docs or docx file'))
+    //     }
+    // }
+})
 
 
 
 
 //post signup method
-router.post('/auth/signup',signup)
+router.post('/auth/signup',upload.single('profilePic'),signup)
 
 
 
-// post signup method
-router.post('/auth/login', login)
+// post login method
+router.post('/auth/login',  login)
 
 
 // uploading a pic to user datbase
